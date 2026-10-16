@@ -16,6 +16,8 @@ public static class Protector
     // takes 139ms on my 11th Gen Intel Core i7-1165G7 @ 2.80GHz.
     private static readonly int iterations = 150_000;
 
+    private static Dictionary<string, User> Users = new();
+
     public static string Encrypt(string plainText, string password)
     {
         byte[] encryptedBytes;
@@ -95,5 +97,60 @@ public static class Protector
             }
         }
         return Encoding.Unicode.GetString(plainBytes);
+    }
+
+    public static User Register(string username, string password)
+    {
+        // generate a random salt
+        RandomNumberGenerator rng = RandomNumberGenerator.Create();
+        
+        byte[] saltBytes = new byte[16];
+        rng.GetBytes(saltBytes);
+        string saltText = ToBase64String(saltBytes);
+        
+        // generate the salted and hashed password
+        string saltedhashedPassword = SaltAndHashPassword(password, saltText);
+
+        User user = new(username, saltText, saltedhashedPassword);
+        Users.Add(user.Name, user);
+
+        return user;
+    }
+
+    /// <summary>
+    /// Check a user's password that is stored in the private static dictionary Users.
+    /// </summary>
+    public static bool CheckPassword(string username, string password)
+    {
+        if (!Users.ContainsKey(username))
+        {
+            return false;
+        }
+        
+        User u = Users[username];
+    
+        return CheckPassword(password, u.Salt, u.SaltedHashedPassword);
+    }
+
+    /// <summary>
+    /// Check a password using salt and hashed password
+    /// </summary>
+    public static bool CheckPassword(string password, string salt, string hashedPassword)
+    {
+        // re-generate the salted and hashed password 
+        string saltedhashedPassword = SaltAndHashPassword(password, salt);
+        
+        return (saltedhashedPassword == hashedPassword);
+    }
+
+    private static string SaltAndHashPassword(string password, string salt)
+    {
+        using (SHA256 sha = SHA256.Create())
+        {
+            string saltedPassword = password + salt;
+    
+            return ToBase64String(sha.ComputeHash(
+                Encoding.Unicode.GetBytes(saltedPassword)));
+        }
     }
 }

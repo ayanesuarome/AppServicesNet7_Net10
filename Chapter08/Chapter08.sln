@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncryptionApp", "Encryption
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptographyLib", "CryptographyLib\CryptographyLib.csproj", "{CF9D6AC6-6F0F-4751-8B23-FCCE90538332}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashingApp", "HashingApp\HashingApp.csproj", "{F5CBCE99-0B84-4164-A3CB-CB407E27B142}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
