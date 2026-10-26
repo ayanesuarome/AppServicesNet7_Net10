@@ -174,7 +174,8 @@ public static class Protector
 
     public static bool ValidateSignature(string data, string signature)
     {
-        if (PublicKey is null){
+        if (PublicKey is null)
+        {
             return false;
         }
 
@@ -192,5 +193,16 @@ public static class Protector
             signatureBytes,
             HashAlgorithmName.SHA256,
             RSASignaturePadding.Pkcs1);
+    }
+
+    public static byte[] GetRandomKeyOrIV(int size)
+    {
+        RandomNumberGenerator r = RandomNumberGenerator.Create();
+        byte[] data = new byte[size];
+        r.GetBytes(data);
+        
+        // data is an array now filled with
+        // cryptographically strong random bytes
+        return data;
     }
 }

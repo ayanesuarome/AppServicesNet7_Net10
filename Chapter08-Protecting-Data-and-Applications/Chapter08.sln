@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashingApp", "HashingApp\Ha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigningApp", "SigningApp\SigningApp.csproj", "{599BF2A4-E563-4246-A629-716B7E49BDBE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomizingApp", "RandomizingApp\RandomizingApp.csproj", "{84B6A48E-C406-4D84-AEE8-98BE54DF2565}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{599BF2A4-E563-4246-A629-716B7E49BDBE}.Release|x64.Build.0 = Release|Any CPU
 		{599BF2A4-E563-4246-A629-716B7E49BDBE}.Release|x86.ActiveCfg = Release|Any CPU
 		{599BF2A4-E563-4246-A629-716B7E49BDBE}.Release|x86.Build.0 = Release|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Debug|x64.Build.0 = Debug|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Debug|x86.Build.0 = Debug|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Release|x64.ActiveCfg = Release|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Release|x64.Build.0 = Release|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Release|x86.ActiveCfg = Release|Any CPU
+		{84B6A48E-C406-4D84-AEE8-98BE54DF2565}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
