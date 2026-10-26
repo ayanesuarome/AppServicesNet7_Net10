@@ -1,5 +1,6 @@
 {
     "csharp-dev-tools.solutionViewer.selectedWorkspaceSolutions": [
-        "Chapter08/Chapter08.sln"
-    ]
+        "Chapter08-Protecting-Data-and-Applications/Chapter08.sln"
+    ],
+    "dotnet.defaultSolution": "Chapter08-Protecting-Data-and-Applications/Chapter08.sln"
 }

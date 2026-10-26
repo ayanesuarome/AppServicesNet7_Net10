@@ -18,6 +18,8 @@ public static class Protector
 
     private static Dictionary<string, User> Users = new();
 
+    public static string? PublicKey;
+
     public static string Encrypt(string plainText, string password)
     {
         byte[] encryptedBytes;
@@ -69,7 +71,7 @@ public static class Protector
     {
         byte[] plainBytes;
         byte[] cryptoBytes = FromBase64String(cipherText);
-        
+
         using (Aes aes = Aes.Create())
         {
             using (Rfc2898DeriveBytes pbkdf2 = new(password, salt, iterations, HashAlgorithmName.SHA256))
@@ -85,7 +87,7 @@ public static class Protector
                     using (CryptoStream cs = new(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
                     {
                         cs.Write(cryptoBytes, 0, cryptoBytes.Length);
-                        
+
                         if (!cs.HasFlushedFinalBlock)
                         {
                             cs.FlushFinalBlock();
@@ -103,11 +105,11 @@ public static class Protector
     {
         // generate a random salt
         RandomNumberGenerator rng = RandomNumberGenerator.Create();
-        
+
         byte[] saltBytes = new byte[16];
         rng.GetBytes(saltBytes);
         string saltText = ToBase64String(saltBytes);
-        
+
         // generate the salted and hashed password
         string saltedhashedPassword = SaltAndHashPassword(password, saltText);
 
@@ -126,9 +128,9 @@ public static class Protector
         {
             return false;
         }
-        
+
         User u = Users[username];
-    
+
         return CheckPassword(password, u.Salt, u.SaltedHashedPassword);
     }
 
@@ -139,7 +141,7 @@ public static class Protector
     {
         // re-generate the salted and hashed password 
         string saltedhashedPassword = SaltAndHashPassword(password, salt);
-        
+
         return (saltedhashedPassword == hashedPassword);
     }
 
@@ -148,9 +150,47 @@ public static class Protector
         using (SHA256 sha = SHA256.Create())
         {
             string saltedPassword = password + salt;
-    
+
             return ToBase64String(sha.ComputeHash(
                 Encoding.Unicode.GetBytes(saltedPassword)));
         }
+    }
+
+    public static string GenerateSignature(string data)
+    {
+        byte[] dataBytes = Encoding.Unicode.GetBytes(data);
+        SHA256 sha = SHA256.Create();
+
+        byte[] hashedData = sha.ComputeHash(dataBytes);
+        RSA rsa = RSA.Create();
+
+        PublicKey = rsa.ToXmlString(false); // exclude private key
+
+        return ToBase64String(rsa.SignHash(
+            hashedData,
+            HashAlgorithmName.SHA256,
+            RSASignaturePadding.Pkcs1));
+    }
+
+    public static bool ValidateSignature(string data, string signature)
+    {
+        if (PublicKey is null){
+            return false;
+        }
+
+        byte[] dataBytes = Encoding.Unicode.GetBytes(data);
+        SHA256 sha = SHA256.Create();
+
+        byte[] hashedData = sha.ComputeHash(dataBytes);
+        byte[] signatureBytes = FromBase64String(signature);
+
+        RSA rsa = RSA.Create();
+        rsa.FromXmlString(PublicKey);
+
+        return rsa.VerifyHash(
+            hashedData,
+            signatureBytes,
+            HashAlgorithmName.SHA256,
+            RSASignaturePadding.Pkcs1);
     }
 }
