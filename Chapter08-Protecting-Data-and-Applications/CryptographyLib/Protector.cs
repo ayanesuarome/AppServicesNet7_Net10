@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography; // Aes, Rfc2898DeriveBytes, etc.
 using System.Text; // Encoding
+using System.Security.Principal; // GenericIdentity, GenericPrincipal
 using static System.Convert; // ToBase64String, FromBase64String
 
 namespace CryptographyLib;
@@ -101,7 +102,7 @@ public static class Protector
         return Encoding.Unicode.GetString(plainBytes);
     }
 
-    public static User Register(string username, string password)
+    public static User Register(string username, string password, string[]? roles = null)
     {
         // generate a random salt
         RandomNumberGenerator rng = RandomNumberGenerator.Create();
@@ -113,7 +114,12 @@ public static class Protector
         // generate the salted and hashed password
         string saltedhashedPassword = SaltAndHashPassword(password, saltText);
 
-        User user = new(username, saltText, saltedhashedPassword);
+        User user = new(
+            username,
+            saltText,
+            saltedhashedPassword,
+            roles);
+            
         Users.Add(user.Name, user);
 
         return user;
@@ -204,5 +210,18 @@ public static class Protector
         // data is an array now filled with
         // cryptographically strong random bytes
         return data;
+    }
+
+    public static void LogIn(string username, string password)
+    {
+        if (CheckPassword(username, password))
+        {
+            GenericIdentity identity = new(name: username, type: "PacktAuth");
+            GenericPrincipal principal = new(identity, roles: Users[username].Roles);
+
+            // set the principal on the current thread so that
+            // it will be used for authorization by default
+            Thread.CurrentPrincipal = principal;
+        }
     }
 }
