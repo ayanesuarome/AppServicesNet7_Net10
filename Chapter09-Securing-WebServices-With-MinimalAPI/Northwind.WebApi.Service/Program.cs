@@ -5,7 +5,6 @@ using Packt.Shared;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
-using System.Net;
 using System.Security.Claims;
 using Serilog;
 using Serilog.Core;
@@ -23,7 +22,7 @@ builder.Logging.AddSerilog(logger);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();
 builder.Services.AddNorthwindContext();
 builder.Services.AddHttpLogging(options =>
 {
@@ -73,6 +72,10 @@ if (!useMicrosoftRateLimiting)
     // Register the configuration
     builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 }
+else
+{
+    builder.Services.AddRateLimiter();
+}
 
 var app = builder.Build();
 
@@ -88,8 +91,7 @@ if (!useMicrosoftRateLimiting)
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
@@ -137,7 +139,6 @@ $"Welcome, {user.Identity?.Name ?? "secure user"}. Secret for claim myapi:secret
 int pageSize = 10;
 
 app.MapGet("api/products", (
-Serilog.ILogger logger,
 [FromServices] NorthwindContext db,
 [FromQuery] int? page) => {
     db.Products.Where(product =>
@@ -237,4 +238,4 @@ app.MapDelete("api/products/{id:int}", async (
 .Produces(StatusCodes.Status404NotFound)
 .Produces(StatusCodes.Status204NoContent);
 
-app.Run();
+await app.RunAsync();
