@@ -6,7 +6,7 @@ namespace Packt.Shared
     public static class NorthwindContextExtensions
     {
         public static IServiceCollection AddNorthwindContext(this IServiceCollection services, 
-            string connectionString = "Server=northwind.sqlserver;Database=Northwind;User=sa;Password=Northwind123456789^;Trust Server Certificate=True;")
+            string connectionString = "Server=localhost,1433;Database=Northwind;User Id=sa;Password=MiPasswordDeDesarrollo.Net123!;TrustServerCertificate=True;")
         {
             services.AddDbContext<NorthwindContext>(options =>
             {

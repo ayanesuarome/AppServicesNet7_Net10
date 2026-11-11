@@ -1,0 +1,17 @@
+### Get first page of 10 products that are in stock and not discontinued
+GET http://localhost:5071/api/products/
+
+### Get third page of 10 products that are in stock and not discontinued
+GET http://localhost:5071/api/products?page=3
+
+### Get products that are out-of-stock but not discontinued
+GET http://localhost:5071/api/products/outofstock
+
+### Get products that are discontinued
+GET http://localhost:5071/api/products/discontinued
+
+### Get product 77
+GET http://localhost:5071/api/products/77
+
+### Get products that contain "man"
+GET http://localhost:5071/api/products/man

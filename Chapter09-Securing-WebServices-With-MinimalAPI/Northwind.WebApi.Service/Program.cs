@@ -92,6 +92,10 @@ if (!useMicrosoftRateLimiting)
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "Northwind API v1");
+    });
 }
 
 app.UseHttpsRedirection();
@@ -141,7 +145,7 @@ int pageSize = 10;
 app.MapGet("api/products", (
 [FromServices] NorthwindContext db,
 [FromQuery] int? page) => {
-    db.Products.Where(product =>
+    return db.Products.Where(product =>
     (product.UnitsInStock > 0) && (!product.Discontinued))
     .Skip(((page ?? 1) - 1) * pageSize).Take(pageSize);
 })
@@ -156,8 +160,9 @@ app.MapGet("api/products", (
 .RequireRateLimiting(policyName: "fixed5per10seconds");
 
 app.MapGet("api/products/outofstock", ([FromServices] NorthwindContext db, ClaimsPrincipal user) =>
-db.Products.Where(product =>
-(product.UnitsInStock == 0) && (!product.Discontinued)))
+{
+    return db.Products.Where(product => (product.UnitsInStock == 0) && (!product.Discontinued));
+})
 .WithName("GetProductsOutOfStock")
 .WithOpenApi()
 .RequireAuthorization()
@@ -165,7 +170,9 @@ db.Products.Where(product =>
 .Produces(StatusCodes.Status401Unauthorized);
 
 app.MapGet("api/products/discontinued", ([FromServices] NorthwindContext db) =>
-db.Products.Where(product => product.Discontinued))
+{
+    return db.Products.Where(product => product.Discontinued);
+})
 .WithName("GetProductsDiscontinued")
 .WithOpenApi()
 .RequireAuthorization(p => p.RequireClaim("scope", "myapi:secrets"))
@@ -176,8 +183,11 @@ app.MapGet("api/products/{id:int}",
 async Task<Results<Ok<Product>, NotFound>> (
 [FromServices] NorthwindContext db,
 [FromRoute] int id) =>
-await db.Products.FindAsync(id) is Product product ?
-TypedResults.Ok(product) : TypedResults.NotFound())
+{
+    return await db.Products.FindAsync(id) is Product product
+    ? TypedResults.Ok(product)
+    : TypedResults.NotFound();
+})
 .WithName("GetProductById")
 .WithOpenApi()
 .Produces<Product>(StatusCodes.Status200OK)
@@ -185,7 +195,9 @@ TypedResults.Ok(product) : TypedResults.NotFound())
 
 app.MapGet("api/products/{name}", (
 [FromServices] NorthwindContext db, [FromRoute] string name) =>
-db.Products.Where(p => p.ProductName.Contains(name)))
+{
+    return db.Products.Where(p => p.ProductName.Contains(name));
+})
 .WithName("GetProductsByName")
 .WithOpenApi()
 .Produces<Product[]>(StatusCodes.Status200OK)
